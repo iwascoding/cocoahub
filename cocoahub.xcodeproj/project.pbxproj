@@ -10,6 +10,11 @@
 		4DE75BEE1704ADEC008B08B7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE75BED1704ADEC008B08B7 /* Foundation.framework */; };
 		4DE75BF11704ADED008B08B7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE75BF01704ADED008B08B7 /* main.m */; };
 		4DE75BF51704ADED008B08B7 /* cocoahub.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4DE75BF41704ADED008B08B7 /* cocoahub.1 */; };
+		4DE75BFC1704B0BD008B08B7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE75BFB1704B0BD008B08B7 /* Cocoa.framework */; };
+		4DE75C031704B245008B08B7 /* CHGithubHookConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE75C021704B245008B08B7 /* CHGithubHookConnection.m */; };
+		4DE75C061706E908008B08B7 /* CHConfigFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE75C051706E908008B08B7 /* CHConfigFileParser.m */; };
+		4DE75C0C17071AD8008B08B7 /* CHGithubChangeListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE75C0B17071AD8008B08B7 /* CHGithubChangeListener.m */; };
+		82387906D4694D82BEC18583 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5D16DE1FB342208B5D4A36 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,11 +31,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1D226EE4322A421E9427E8B3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		4DE75BEA1704ADEC008B08B7 /* cocoahub */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cocoahub; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DE75BED1704ADEC008B08B7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4DE75BF01704ADED008B08B7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4DE75BF31704ADED008B08B7 /* cocoahub-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cocoahub-Prefix.pch"; sourceTree = "<group>"; };
 		4DE75BF41704ADED008B08B7 /* cocoahub.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = cocoahub.1; sourceTree = "<group>"; };
+		4DE75BFB1704B0BD008B08B7 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		4DE75C011704B245008B08B7 /* CHGithubHookConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHGithubHookConnection.h; sourceTree = "<group>"; };
+		4DE75C021704B245008B08B7 /* CHGithubHookConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHGithubHookConnection.m; sourceTree = "<group>"; };
+		4DE75C041706E908008B08B7 /* CHConfigFileParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHConfigFileParser.h; sourceTree = "<group>"; };
+		4DE75C051706E908008B08B7 /* CHConfigFileParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHConfigFileParser.m; sourceTree = "<group>"; };
+		4DE75C0A17071AD8008B08B7 /* CHGithubChangeListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHGithubChangeListener.h; sourceTree = "<group>"; };
+		4DE75C0B17071AD8008B08B7 /* CHGithubChangeListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHGithubChangeListener.m; sourceTree = "<group>"; };
+		9E5D16DE1FB342208B5D4A36 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +53,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4DE75BEE1704ADEC008B08B7 /* Foundation.framework in Frameworks */,
+				82387906D4694D82BEC18583 /* libPods.a in Frameworks */,
+				4DE75BFC1704B0BD008B08B7 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,6 +67,7 @@
 				4DE75BEF1704ADED008B08B7 /* cocoahub */,
 				4DE75BEC1704ADEC008B08B7 /* Frameworks */,
 				4DE75BEB1704ADEC008B08B7 /* Products */,
+				1D226EE4322A421E9427E8B3 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,7 +82,9 @@
 		4DE75BEC1704ADEC008B08B7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4DE75BFB1704B0BD008B08B7 /* Cocoa.framework */,
 				4DE75BED1704ADEC008B08B7 /* Foundation.framework */,
+				9E5D16DE1FB342208B5D4A36 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -73,9 +92,15 @@
 		4DE75BEF1704ADED008B08B7 /* cocoahub */ = {
 			isa = PBXGroup;
 			children = (
+				4DE75C0A17071AD8008B08B7 /* CHGithubChangeListener.h */,
+				4DE75C0B17071AD8008B08B7 /* CHGithubChangeListener.m */,
 				4DE75BF01704ADED008B08B7 /* main.m */,
 				4DE75BF41704ADED008B08B7 /* cocoahub.1 */,
 				4DE75BF21704ADED008B08B7 /* Supporting Files */,
+				4DE75C011704B245008B08B7 /* CHGithubHookConnection.h */,
+				4DE75C021704B245008B08B7 /* CHGithubHookConnection.m */,
+				4DE75C041706E908008B08B7 /* CHConfigFileParser.h */,
+				4DE75C051706E908008B08B7 /* CHConfigFileParser.m */,
 			);
 			path = cocoahub;
 			sourceTree = "<group>";
@@ -98,6 +123,7 @@
 				4DE75BE61704ADEC008B08B7 /* Sources */,
 				4DE75BE71704ADEC008B08B7 /* Frameworks */,
 				4DE75BE81704ADEC008B08B7 /* CopyFiles */,
+				9D4B70E2A1424CC3A96854C8 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -134,12 +160,32 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		9D4B70E2A1424CC3A96854C8 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		4DE75BE61704ADEC008B08B7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				4DE75BF11704ADED008B08B7 /* main.m in Sources */,
+				4DE75C031704B245008B08B7 /* CHGithubHookConnection.m in Sources */,
+				4DE75C061706E908008B08B7 /* CHConfigFileParser.m in Sources */,
+				4DE75C0C17071AD8008B08B7 /* CHGithubChangeListener.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,6 +253,7 @@
 		};
 		4DE75BF91704ADED008B08B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1D226EE4322A421E9427E8B3 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "cocoahub/cocoahub-Prefix.pch";
@@ -216,6 +263,7 @@
 		};
 		4DE75BFA1704ADED008B08B7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1D226EE4322A421E9427E8B3 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "cocoahub/cocoahub-Prefix.pch";
@@ -242,6 +290,7 @@
 				4DE75BFA1704ADED008B08B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
