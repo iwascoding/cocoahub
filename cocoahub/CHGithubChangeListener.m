@@ -91,13 +91,22 @@ extern int ddLogLevel;
 		}
 		if ([self podfileExistsInDirectory:localRepoPath])
 		{
+			exitStatus = [self installCocoaPodsAtPath:localRepoPath];
+			if (exitStatus)
+			{
+				return;
+			}
 			exitStatus = [self updateCocoaPodsAtPath:localRepoPath];
 			if (exitStatus)
 			{
 				return;
 			}
 		}		
-		[self buildXcodeProjectAtPath:localRepoPath];
+		exitStatus = [self buildXcodeProjectAtPath:localRepoPath];
+		if (0 == exitStatus)
+		{
+			DDLogInfo(@"compiled project successfully at path %@", localRepoPath);
+		}
 	});
 }
 
@@ -183,6 +192,29 @@ extern int ddLogLevel;
 	
 	[podTask setCurrentDirectoryPath:inRepoPath];
 	[podTask setLaunchPath:@"/usr/bin/pod"];
+	[podTask setArguments:@[@"update"]];
+	
+	[podTask launch];
+	[podTask waitUntilExit];
+	
+	terminationStatus = [podTask terminationStatus];
+	if (terminationStatus)
+	{
+		DDLogError(@"updating CocoaPods at path %@ failed with status %ld", inRepoPath, (long) terminationStatus);
+	}
+	
+	return terminationStatus;
+}
+
+- (NSInteger) installCocoaPodsAtPath:(NSString*) inRepoPath
+{
+	NSTask		*podTask = [[NSTask alloc] init];
+	NSInteger	terminationStatus;
+	
+	DDLogInfo(@"installing CocoaPods at path %@", inRepoPath);
+	
+	[podTask setCurrentDirectoryPath:inRepoPath];
+	[podTask setLaunchPath:@"/usr/bin/pod"];
 	[podTask setArguments:@[@"install"]];
 	
 	[podTask launch];
@@ -191,7 +223,7 @@ extern int ddLogLevel;
 	terminationStatus = [podTask terminationStatus];
 	if (terminationStatus)
 	{
-		DDLogError(@"git pull at path %@ failed with status %ld", inRepoPath, (long) terminationStatus);
+		DDLogError(@"installing CocoaPods at path %@ failed with status %ld", inRepoPath, (long) terminationStatus);
 	}
 	
 	return terminationStatus;
