@@ -38,11 +38,18 @@ NSString *const kCHConnectionReceivedChangeRecordNotification = @"CHConnectionRe
 {
 	NSError *error;
 	id		receivedObject;
+	NSString *decodedBodyString = [[NSString alloc] initWithData:[request body] encoding:NSUTF8StringEncoding];
 	
-	
-	DDLogVerbose(@"received data: %@", [[NSString alloc] initWithData:[request body] encoding:NSUTF8StringEncoding]);
-	receivedObject = [NSJSONSerialization JSONObjectWithData:[request body]
-													 options:0 error:&error];
+	decodedBodyString = [decodedBodyString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
+	DDLogVerbose(@"received data: %@", decodedBodyString);
+
+	if ([decodedBodyString hasPrefix:@"payload="]) // seems NSJson chokes on 'payload=' part of body data
+	{
+		decodedBodyString = [decodedBodyString substringFromIndex:[@"payload=" length]];
+	}
+	receivedObject = [NSJSONSerialization JSONObjectWithData:[decodedBodyString dataUsingEncoding:NSUTF8StringEncoding]
+													 options:NSJSONReadingAllowFragments error:&error];
 	if (nil == receivedObject)
 	{
 		DDLogError(@"couldn't deserialize received data, error: %@", error);
