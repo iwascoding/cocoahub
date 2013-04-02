@@ -39,6 +39,8 @@ NSString *const kCHConnectionReceivedChangeRecordNotification = @"CHConnectionRe
 	NSError *error;
 	id		receivedObject;
 	
+	
+	DDLogVerbose(@"received data: %@", [[NSString alloc] initWithData:[request body] encoding:NSUTF8StringEncoding]);
 	receivedObject = [NSJSONSerialization JSONObjectWithData:[request body]
 													 options:0 error:&error];
 	if (nil == receivedObject)
