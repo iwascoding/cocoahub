@@ -1,7 +1,7 @@
 #!/bin/sh
 
 killall cocoahub
-if [ -d ./bin ]; then
+if [ ! -d bin ]; then
 	mkdir bin
 fi
 pod install
