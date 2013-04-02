@@ -24,6 +24,7 @@ extern int ddLogLevel;
 
 @property (strong) HTTPServer			*httpServer;
 @property (strong) NSString				*repositoryDirectory;
+@property (assign) dispatch_queue_t		buildQueue;
 
 
 @end
@@ -54,35 +55,44 @@ extern int ddLogLevel;
 												 selector:@selector(changeRecordReceived:)
 													 name:kCHConnectionReceivedChangeRecordNotification
 												   object:nil];
+		
+		self.buildQueue = dispatch_queue_create("com.cocoahub.buildqueue", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
 
+- (void) dealloc
+{
+	dispatch_release(self.buildQueue);
+}
+
 - (void) changeRecordReceived:(NSNotification*) inNotifcation
 {
-	NSString *changedRepoURL = inNotifcation.userInfo[@"repositoryURL"];
-	NSString *localRepoPath;
-	
-	if (![changedRepoURL hasSuffix:@".git"])
-	{
-		// change notification from git hub seem to be lack the .git URL suffix
-		changedRepoURL = [changedRepoURL stringByAppendingString:@".git"];
-	}
-	
-	localRepoPath = [self localPathForRepositoryWithURL:changedRepoURL];
-	if (nil == localRepoPath)
-	{
-		DDLogWarn(@"No local repository cloned from URL %@ in repos directory %@", changedRepoURL, self.repositoryDirectory);
-		return;
-	}
-	NSInteger exitStatus;
-	
-	exitStatus = [self updateRepoAtPath:localRepoPath];
-	if (exitStatus)
-	{
-		return;
-	}
-	exitStatus = [self buildXcodeProjectAtPath:localRepoPath];
+	dispatch_async(self.buildQueue,^{
+		NSString *changedRepoURL = inNotifcation.userInfo[@"repositoryURL"];
+		NSString *localRepoPath;
+		
+		if (![changedRepoURL hasSuffix:@".git"])
+		{
+			// change notification from git hub seem to be lack the .git URL suffix
+			changedRepoURL = [changedRepoURL stringByAppendingString:@".git"];
+		}
+		
+		localRepoPath = [self localPathForRepositoryWithURL:changedRepoURL];
+		if (nil == localRepoPath)
+		{
+			DDLogWarn(@"No local repository cloned from URL %@ in repos directory %@", changedRepoURL, self.repositoryDirectory);
+			return;
+		}
+		NSInteger exitStatus;
+		
+		exitStatus = [self updateRepoAtPath:localRepoPath];
+		if (exitStatus)
+		{
+			return;
+		}
+		exitStatus = [self buildXcodeProjectAtPath:localRepoPath];
+	});
 }
 
 - (void) shutdown

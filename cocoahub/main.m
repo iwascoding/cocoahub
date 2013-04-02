@@ -34,7 +34,7 @@ int main(int argc, const char * argv[])
 	{
 		configureLogging();
 		
-		// TODO: config path for repo directory
+		// TODO: configureable path for repo directory
 		CHGithubChangeListener *ghChangeListener = [[CHGithubChangeListener alloc] initWithPort:3001
 													repositoryDirectory:@"~/source"];
 		if (nil == ghChangeListener)
@@ -44,7 +44,7 @@ int main(int argc, const char * argv[])
 		
 		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantFuture]];
 		
-		[ghChangeListener shutdown];
+		//[ghChangeListener shutdown];
 	}
     return 0;
 }
