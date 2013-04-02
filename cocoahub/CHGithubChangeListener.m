@@ -75,12 +75,6 @@ extern int ddLogLevel;
 		NSString *changedRepoURL = inNotifcation.userInfo[@"repositoryURL"];
 		NSString *localRepoPath;
 		
-		if (![changedRepoURL hasSuffix:@".git"])
-		{
-			// change notification from git hub seem to be lack the .git URL suffix
-			changedRepoURL = [changedRepoURL stringByAppendingString:@".git"];
-		}
-		
 		localRepoPath = [self localPathForRepositoryWithURL:changedRepoURL];
 		if (nil == localRepoPath)
 		{
@@ -105,9 +99,11 @@ extern int ddLogLevel;
 
 - (NSString*) localPathForRepositoryWithURL:(NSString*) inRepoURL
 {
-	NSError			*error;
+	NSError		*error;
 	NSArray		*dirContents;
-	
+	NSString	*account = [[self class] githubAccountFromURLString:inRepoURL];
+	NSString	*project = [[self class] githubProjectFromURLString:inRepoURL];
+
 	dirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.repositoryDirectory
 																	  error:&error];
 	
@@ -121,9 +117,15 @@ extern int ddLogLevel;
 		if (nil == repo)
 			continue;
 		
-		if (MATCH (repo.configuration.remotes, [[obj URLString] isEqualToString:inRepoURL]))
+		for (GTRemote *remote in repo.configuration.remotes)
 		{
-			return filePath;
+			NSString* remoteURL = [remote URLString];
+			
+			if ([[[self class] githubAccountFromURLString:remoteURL] isEqualToString:account] &&
+				[[[self class] githubProjectFromURLString:remoteURL] isEqualToString:project])
+			{
+				return filePath;
+			}
 		}
 	}
 	return nil;
@@ -173,9 +175,10 @@ extern int ddLogLevel;
 	workspaceFilename = MATCH (dirContents, [obj hasSuffix:@".xcworkspace"]);
 	if (workspaceFilename)
 	{
-		// TODO: a way to configure scheme name, for now pretend scheme is called like containing directory
+		// TODO: a way to configure scheme name, for now pretend scheme is called like the containing directory
 		[arguments addObjectsFromArray:@[@"-workspace", workspaceFilename, @"-scheme", [inRepoPath lastPathComponent]]];
 	}
+	// make sure product goes into configured CGI dir
 	[arguments addObjectsFromArray:@[@"install", [NSString stringWithFormat:@"DSTROOT=%@", self.CGIDir] , @"INSTALL_PATH=/" ]];
 	[xcodeBuildTask setArguments:arguments];
 	[xcodeBuildTask launch];
@@ -187,10 +190,117 @@ extern int ddLogLevel;
 		DDLogError(@"building Xcode project %@ failed with status %ld", inRepoPath, (long) terminationStatus);
 	}
 	
-	// TODO: optionally move built product (cgi) to cgi directory 
-	
 	return terminationStatus;
 }
 
++ (NSString*) githubAccountFromURLString:(NSString*) inRepoURLString
+{
+	if ([inRepoURLString hasPrefix:@"https://github.com/"])
+	{
+		return [self githubAccountFromRepoHTTPURLString:inRepoURLString];
+	}
+	else if ([inRepoURLString hasPrefix:@"git@github.com:"])
+	{
+		return [self githubAccountFromRepoSSHURLString:inRepoURLString];
+	}
+	return nil;
+}
 
-@end
++ (NSString*) githubProjectFromURLString:(NSString*) inRepoURLString
+{
+	if ([inRepoURLString hasPrefix:@"https://github.com/"])
+	{
+		return [self githubProjectFromRepoHTTPURLString:inRepoURLString];
+	}
+	else if ([inRepoURLString hasPrefix:@"git@github.com:"])
+	{
+		return [self githubProjectFromRepoSSHURLString:inRepoURLString];
+	}
+	return nil;
+}
+
++ (NSString*) githubAccountFromRepoHTTPURLString:(NSString*) inRepoURLString
+{
+	NSArray *components;
+	
+	if (![inRepoURLString hasPrefix:@"https://github.com/"])
+	{
+		return nil;
+	}
+	inRepoURLString = [inRepoURLString substringFromIndex:[@"https://github.com/" length]];
+	
+	components = [inRepoURLString pathComponents];
+	if (components.count)
+		return components[0];
+	
+	return nil;
+}
+
++ (NSString*) githubProjectFromRepoHTTPURLString:(NSString*) inRepoURLString
+{
+	NSArray *components;
+	
+	if (![inRepoURLString hasPrefix:@"https://github.com/"])
+	{
+		return nil;
+	}
+	inRepoURLString = [inRepoURLString substringFromIndex:[@"https://github.com/" length]];
+	
+	components = [inRepoURLString pathComponents];
+	if (components.count > 1)
+	{
+		NSString *project = components[1];
+		
+		if ([project hasSuffix:@".git"])
+		{
+			project = [project stringByDeletingPathExtension];
+		}
+		return project;
+	}
+	
+	return nil;
+}
+
++ (NSString*) githubAccountFromRepoSSHURLString:(NSString*) inRepoURLString
+{
+	NSArray *components;
+	
+	if (![inRepoURLString hasPrefix:@"git@github.com:"])
+	{
+		return nil;
+	}
+	inRepoURLString = [inRepoURLString substringFromIndex:[@"git@github.com:" length]];
+	
+	components = [inRepoURLString pathComponents];
+	if (components.count)
+		return components[0];
+	
+	return nil;
+}
+
++ (NSString*) githubProjectFromRepoSSHURLString:(NSString*) inRepoURLString
+{
+	NSArray *components;
+	
+	if (![inRepoURLString hasPrefix:@"git@github.com:"])
+	{
+		return nil;
+	}
+	inRepoURLString = [inRepoURLString substringFromIndex:[@"git@github.com:" length]];
+	
+	components = [inRepoURLString pathComponents];
+	if (components.count > 1)
+	{
+		NSString *project = components[1];
+		
+		if ([project hasSuffix:@".git"])
+		{
+			project = [project stringByDeletingPathExtension];
+		}
+		return project;
+	}
+	
+	return nil;
+}
+
+@end 

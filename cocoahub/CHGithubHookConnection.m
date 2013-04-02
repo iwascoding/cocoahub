@@ -55,6 +55,7 @@ NSString *const kCHConnectionReceivedChangeRecordNotification = @"CHConnectionRe
 		DDLogError(@"couldn't deserialize received data, error: %@", error);
 		return [[HTTPDataResponse alloc] initWithData:[@"Error\n" dataUsingEncoding:NSUTF8StringEncoding]];
 	}
+	//TODO: reject requests that aren't originating from GitHubs documented IPs
 	DDLogVerbose(@"received JSON data from %@:\n%@", [asyncSocket connectedHost], receivedObject);
 	
 	if (![receivedObject isKindOfClass:[NSDictionary class]])
