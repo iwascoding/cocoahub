@@ -7,4 +7,4 @@ fi
 pod install
 pod update
 xcodebuild -workspace cocoahub.xcworkspace/ -scheme cocoahub install "DSTROOT=./bin" "INSTALL_PATH=/"
-bin/cocoahub & 
+bin/cocoahub > /dev/null 2>&1 &
