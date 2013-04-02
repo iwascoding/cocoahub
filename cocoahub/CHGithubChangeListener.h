@@ -10,7 +10,7 @@
 
 @interface CHGithubChangeListener : NSObject
 
-- (id)initWithPort:(NSUInteger) inPort repositoryDirectory:(NSString*) inRepoDir;
+- (id)initWithPort:(NSUInteger) inPort repositoryDirectory:(NSString*) inRepoDir CGIDirectory:(NSString*) inCGIDir;
 - (void) shutdown;
 
 @end

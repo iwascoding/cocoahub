@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 #import "CHGithubChangeListener.h"
+#import "CHHTTPRequestRelay.h"
+
 #import "DDLog.h"
 #import "DDFileLogger.h"
 #import "DDTTYLogger.h"
@@ -36,15 +38,21 @@ int main(int argc, const char * argv[])
 		
 		// TODO: configureable path for repo directory
 		CHGithubChangeListener *ghChangeListener = [[CHGithubChangeListener alloc] initWithPort:3001
-													repositoryDirectory:@"~/source"];
+													repositoryDirectory:@"~/source"
+													CGIDirectory:@"~/cgi-bin"];
 		if (nil == ghChangeListener)
 		{
 			exit (-1);
 		}
 		
-		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantFuture]];
+		CHHTTPRequestRelay *requestRelay = [[CHHTTPRequestRelay alloc] initWithPort:3002
+																	   GGIDirectory:@"~/cgi-bin"];
+		if (nil == requestRelay)
+		{
+			exit (-1);
+		}
 		
-		//[ghChangeListener shutdown];
+		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantFuture]];
 	}
     return 0;
 }

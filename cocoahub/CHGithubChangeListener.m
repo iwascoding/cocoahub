@@ -24,6 +24,7 @@ extern int ddLogLevel;
 
 @property (strong) HTTPServer			*httpServer;
 @property (strong) NSString				*repositoryDirectory;
+@property (strong) NSString				*CGIDir;
 @property (assign) dispatch_queue_t		buildQueue;
 
 
@@ -31,7 +32,7 @@ extern int ddLogLevel;
 
 @implementation CHGithubChangeListener
 
-- (id)initWithPort:(NSUInteger) inPort repositoryDirectory:(NSString*) inRepoDir
+- (id)initWithPort:(NSUInteger) inPort repositoryDirectory:(NSString*) inRepoDir CGIDirectory:(NSString*) inCGIDir
 {
 	NSParameterAssert(inRepoDir);
 	
@@ -51,6 +52,8 @@ extern int ddLogLevel;
 		DDLogInfo (@"GitHub listener started on port %ld", inPort);
 		
 		self.repositoryDirectory = [[inRepoDir stringByExpandingTildeInPath] stringByStandardizingPath];
+		self.CGIDir = [[inCGIDir stringByExpandingTildeInPath] stringByStandardizingPath];
+
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(changeRecordReceived:)
 													 name:kCHConnectionReceivedChangeRecordNotification
@@ -91,7 +94,7 @@ extern int ddLogLevel;
 		{
 			return;
 		}
-		exitStatus = [self buildXcodeProjectAtPath:localRepoPath];
+		[self buildXcodeProjectAtPath:localRepoPath];
 	});
 }
 
@@ -151,11 +154,12 @@ extern int ddLogLevel;
 
 - (NSInteger) buildXcodeProjectAtPath:(NSString*) inRepoPath
 {
-	NSTask		*xcodeBuildTask = [[NSTask alloc] init];
-	NSInteger	terminationStatus;
-	NSArray		*dirContents;
-	NSString	*workspaceFilename;
-	NSError		*error;
+	NSTask			*xcodeBuildTask = [[NSTask alloc] init];
+	NSInteger		terminationStatus;
+	NSArray			*dirContents;
+	NSString		*workspaceFilename;
+	NSError			*error;
+	NSMutableArray	*arguments = [NSMutableArray array];
 	
 	DDLogInfo(@"building Xcode project at path %@", inRepoPath);
 	
@@ -170,9 +174,10 @@ extern int ddLogLevel;
 	if (workspaceFilename)
 	{
 		// TODO: a way to configure scheme name, for now pretend scheme is called like containing directory
-		[xcodeBuildTask setArguments:@[@"-workspace", workspaceFilename, @"-scheme", [inRepoPath lastPathComponent]]];
+		[arguments addObjectsFromArray:@[@"-workspace", workspaceFilename, @"-scheme", [inRepoPath lastPathComponent]]];
 	}
-	
+	[arguments addObjectsFromArray:@[@"install", [NSString stringWithFormat:@"DSTROOT=%@", self.CGIDir] , @"INSTALL_PATH=/" ]];
+	[xcodeBuildTask setArguments:arguments];
 	[xcodeBuildTask launch];
 	[xcodeBuildTask waitUntilExit];
 	
