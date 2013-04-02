@@ -8,6 +8,7 @@
 
 #import "CHGithubChangeListener.h"
 #import "CHGithubHookConnection.h"
+#import "GHRepositoryURLParser.h"
 
 
 #import "HTTPServer.h"
@@ -88,6 +89,14 @@ extern int ddLogLevel;
 		{
 			return;
 		}
+		if ([self podfileExistsInDirectory:localRepoPath])
+		{
+			exitStatus = [self updateCocoaPodsAtPath:localRepoPath];
+			if (exitStatus)
+			{
+				return;
+			}
+		}		
 		[self buildXcodeProjectAtPath:localRepoPath];
 	});
 }
@@ -101,8 +110,8 @@ extern int ddLogLevel;
 {
 	NSError		*error;
 	NSArray		*dirContents;
-	NSString	*account = [[self class] githubAccountFromURLString:inRepoURL];
-	NSString	*project = [[self class] githubProjectFromURLString:inRepoURL];
+	NSString	*account = [GHRepositoryURLParser githubAccountFromURLString:inRepoURL];
+	NSString	*project = [GHRepositoryURLParser githubProjectFromURLString:inRepoURL];
 
 	dirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.repositoryDirectory
 																	  error:&error];
@@ -121,8 +130,8 @@ extern int ddLogLevel;
 		{
 			NSString* remoteURL = [remote URLString];
 			
-			if ([[[self class] githubAccountFromURLString:remoteURL] isEqualToString:account] &&
-				[[[self class] githubProjectFromURLString:remoteURL] isEqualToString:project])
+			if ([[GHRepositoryURLParser githubAccountFromURLString:remoteURL] isEqualToString:account] &&
+				[[GHRepositoryURLParser githubProjectFromURLString:remoteURL] isEqualToString:project])
 			{
 				return filePath;
 			}
@@ -146,6 +155,40 @@ extern int ddLogLevel;
 	[gitPullTask waitUntilExit];
 	
 	terminationStatus = [gitPullTask terminationStatus];
+	if (terminationStatus)
+	{
+		DDLogError(@"git pull at path %@ failed with status %ld", inRepoPath, (long) terminationStatus);
+	}
+	
+	return terminationStatus;
+}
+
+- (BOOL) podfileExistsInDirectory:(NSString*) inRepoPath
+{
+	NSArray *dirContents;
+	NSError *error;
+	
+	dirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:inRepoPath
+																	  error:&error];
+	
+	return (nil != MATCH (dirContents, [obj isEqualToString:@"Podfile"]));
+}
+
+- (NSInteger) updateCocoaPodsAtPath:(NSString*) inRepoPath
+{
+	NSTask		*podTask = [[NSTask alloc] init];
+	NSInteger	terminationStatus;
+
+	DDLogInfo(@"updating CocoaPods at path %@", inRepoPath);
+	
+	[podTask setCurrentDirectoryPath:inRepoPath];
+	[podTask setLaunchPath:@"/usr/bin/pod"];
+	[podTask setArguments:@[@"install"]];
+	
+	[podTask launch];
+	[podTask waitUntilExit];
+	
+	terminationStatus = [podTask terminationStatus];
 	if (terminationStatus)
 	{
 		DDLogError(@"git pull at path %@ failed with status %ld", inRepoPath, (long) terminationStatus);
@@ -193,114 +236,5 @@ extern int ddLogLevel;
 	return terminationStatus;
 }
 
-+ (NSString*) githubAccountFromURLString:(NSString*) inRepoURLString
-{
-	if ([inRepoURLString hasPrefix:@"https://github.com/"])
-	{
-		return [self githubAccountFromRepoHTTPURLString:inRepoURLString];
-	}
-	else if ([inRepoURLString hasPrefix:@"git@github.com:"])
-	{
-		return [self githubAccountFromRepoSSHURLString:inRepoURLString];
-	}
-	return nil;
-}
-
-+ (NSString*) githubProjectFromURLString:(NSString*) inRepoURLString
-{
-	if ([inRepoURLString hasPrefix:@"https://github.com/"])
-	{
-		return [self githubProjectFromRepoHTTPURLString:inRepoURLString];
-	}
-	else if ([inRepoURLString hasPrefix:@"git@github.com:"])
-	{
-		return [self githubProjectFromRepoSSHURLString:inRepoURLString];
-	}
-	return nil;
-}
-
-+ (NSString*) githubAccountFromRepoHTTPURLString:(NSString*) inRepoURLString
-{
-	NSArray *components;
-	
-	if (![inRepoURLString hasPrefix:@"https://github.com/"])
-	{
-		return nil;
-	}
-	inRepoURLString = [inRepoURLString substringFromIndex:[@"https://github.com/" length]];
-	
-	components = [inRepoURLString pathComponents];
-	if (components.count)
-		return components[0];
-	
-	return nil;
-}
-
-+ (NSString*) githubProjectFromRepoHTTPURLString:(NSString*) inRepoURLString
-{
-	NSArray *components;
-	
-	if (![inRepoURLString hasPrefix:@"https://github.com/"])
-	{
-		return nil;
-	}
-	inRepoURLString = [inRepoURLString substringFromIndex:[@"https://github.com/" length]];
-	
-	components = [inRepoURLString pathComponents];
-	if (components.count > 1)
-	{
-		NSString *project = components[1];
-		
-		if ([project hasSuffix:@".git"])
-		{
-			project = [project stringByDeletingPathExtension];
-		}
-		return project;
-	}
-	
-	return nil;
-}
-
-+ (NSString*) githubAccountFromRepoSSHURLString:(NSString*) inRepoURLString
-{
-	NSArray *components;
-	
-	if (![inRepoURLString hasPrefix:@"git@github.com:"])
-	{
-		return nil;
-	}
-	inRepoURLString = [inRepoURLString substringFromIndex:[@"git@github.com:" length]];
-	
-	components = [inRepoURLString pathComponents];
-	if (components.count)
-		return components[0];
-	
-	return nil;
-}
-
-+ (NSString*) githubProjectFromRepoSSHURLString:(NSString*) inRepoURLString
-{
-	NSArray *components;
-	
-	if (![inRepoURLString hasPrefix:@"git@github.com:"])
-	{
-		return nil;
-	}
-	inRepoURLString = [inRepoURLString substringFromIndex:[@"git@github.com:" length]];
-	
-	components = [inRepoURLString pathComponents];
-	if (components.count > 1)
-	{
-		NSString *project = components[1];
-		
-		if ([project hasSuffix:@".git"])
-		{
-			project = [project stringByDeletingPathExtension];
-		}
-		return project;
-	}
-	
-	return nil;
-}
 
 @end 

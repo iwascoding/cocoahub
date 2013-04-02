@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4D9B6E0F170B10CF00AAC8C7 /* CHHTTPRequestRelay.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9B6E0E170B10CF00AAC8C7 /* CHHTTPRequestRelay.m */; };
+		4D9B6E2C170B589900AAC8C7 /* GHRepositoryURLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9B6E2B170B589900AAC8C7 /* GHRepositoryURLParser.m */; };
 		4DE75BEE1704ADEC008B08B7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE75BED1704ADEC008B08B7 /* Foundation.framework */; };
 		4DE75BF11704ADED008B08B7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE75BF01704ADED008B08B7 /* main.m */; };
 		4DE75BF51704ADED008B08B7 /* cocoahub.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4DE75BF41704ADED008B08B7 /* cocoahub.1 */; };
@@ -35,6 +36,8 @@
 		1D226EE4322A421E9427E8B3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		4D9B6E0D170B10CF00AAC8C7 /* CHHTTPRequestRelay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHHTTPRequestRelay.h; sourceTree = "<group>"; };
 		4D9B6E0E170B10CF00AAC8C7 /* CHHTTPRequestRelay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHHTTPRequestRelay.m; sourceTree = "<group>"; };
+		4D9B6E2A170B589900AAC8C7 /* GHRepositoryURLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHRepositoryURLParser.h; sourceTree = "<group>"; };
+		4D9B6E2B170B589900AAC8C7 /* GHRepositoryURLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHRepositoryURLParser.m; sourceTree = "<group>"; };
 		4DE75BEA1704ADEC008B08B7 /* cocoahub */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cocoahub; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DE75BED1704ADEC008B08B7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4DE75BF01704ADED008B08B7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -106,6 +109,8 @@
 				4DE75C051706E908008B08B7 /* CHConfigFileParser.m */,
 				4D9B6E0D170B10CF00AAC8C7 /* CHHTTPRequestRelay.h */,
 				4D9B6E0E170B10CF00AAC8C7 /* CHHTTPRequestRelay.m */,
+				4D9B6E2A170B589900AAC8C7 /* GHRepositoryURLParser.h */,
+				4D9B6E2B170B589900AAC8C7 /* GHRepositoryURLParser.m */,
 			);
 			path = cocoahub;
 			sourceTree = "<group>";
@@ -192,6 +197,7 @@
 				4DE75C061706E908008B08B7 /* CHConfigFileParser.m in Sources */,
 				4DE75C0C17071AD8008B08B7 /* CHGithubChangeListener.m in Sources */,
 				4D9B6E0F170B10CF00AAC8C7 /* CHHTTPRequestRelay.m in Sources */,
+				4D9B6E2C170B589900AAC8C7 /* GHRepositoryURLParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
