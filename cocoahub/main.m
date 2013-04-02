@@ -37,6 +37,7 @@ int main(int argc, const char * argv[])
 		configureLogging();
 		
 		// TODO: configureable path for repo directory
+		// TODO: check that these directories exist and are writeable
 		CHGithubChangeListener *ghChangeListener = [[CHGithubChangeListener alloc] initWithPort:3001
 													repositoryDirectory:@"~/source"
 													CGIDirectory:@"~/cgi-bin"];

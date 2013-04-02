@@ -95,9 +95,9 @@
 		4DE75BEF1704ADED008B08B7 /* cocoahub */ = {
 			isa = PBXGroup;
 			children = (
+				4DE75BF01704ADED008B08B7 /* main.m */,
 				4DE75C0A17071AD8008B08B7 /* CHGithubChangeListener.h */,
 				4DE75C0B17071AD8008B08B7 /* CHGithubChangeListener.m */,
-				4DE75BF01704ADED008B08B7 /* main.m */,
 				4DE75BF41704ADED008B08B7 /* cocoahub.1 */,
 				4DE75BF21704ADED008B08B7 /* Supporting Files */,
 				4DE75C011704B245008B08B7 /* CHGithubHookConnection.h */,
