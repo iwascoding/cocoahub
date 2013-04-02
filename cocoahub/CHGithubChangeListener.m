@@ -75,7 +75,14 @@ extern int ddLogLevel;
 		DDLogWarn(@"No local repository cloned from URL %@ in repos directory %@", changedRepoURL, self.repositoryDirectory);
 		return;
 	}
-	[self updateRepoAtPath:localRepoPath];
+	NSInteger exitStatus;
+	
+	exitStatus = [self updateRepoAtPath:localRepoPath];
+	if (exitStatus)
+	{
+		return;
+	}
+	exitStatus = [self buildXcodeProjectAtPath:localRepoPath];
 }
 
 - (void) shutdown
@@ -109,9 +116,10 @@ extern int ddLogLevel;
 	return nil;
 }
 
-- (void) updateRepoAtPath:(NSString*) inRepoPath
+- (NSInteger) updateRepoAtPath:(NSString*) inRepoPath
 {
-	NSTask *gitPullTask = [[NSTask alloc] init];
+	NSTask		*gitPullTask = [[NSTask alloc] init];
+	NSInteger	terminationStatus;
 	
 	DDLogInfo(@"updating repo at path %@", inRepoPath);
 	
@@ -122,7 +130,52 @@ extern int ddLogLevel;
 	[gitPullTask launch];
 	[gitPullTask waitUntilExit];
 	
-	NSLog (@"git pull termination status: %d", [gitPullTask terminationStatus]);
+	terminationStatus = [gitPullTask terminationStatus];
+	if (terminationStatus)
+	{
+		DDLogError(@"git pull at path %@ failed with status %ld", inRepoPath, (long) terminationStatus);
+	}
+	
+	return terminationStatus;
 }
+
+- (NSInteger) buildXcodeProjectAtPath:(NSString*) inRepoPath
+{
+	NSTask		*xcodeBuildTask = [[NSTask alloc] init];
+	NSInteger	terminationStatus;
+	NSArray		*dirContents;
+	NSString	*workspaceFilename;
+	NSError		*error;
+	
+	DDLogInfo(@"building Xcode project at path %@", inRepoPath);
+	
+	[xcodeBuildTask setCurrentDirectoryPath:inRepoPath];
+	[xcodeBuildTask setLaunchPath:@"/usr/bin/xcodebuild"];
+	
+	// check if there is an xcodeworkspace file we should use
+	dirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:inRepoPath
+																	  error:&error];
+	
+	workspaceFilename = MATCH (dirContents, [obj hasSuffix:@".xcworkspace"]);
+	if (workspaceFilename)
+	{
+		// TODO: a way to configure scheme name, for now pretend scheme is called like containing directory
+		[xcodeBuildTask setArguments:@[@"-workspace", workspaceFilename, @"-scheme", [inRepoPath lastPathComponent]]];
+	}
+	
+	[xcodeBuildTask launch];
+	[xcodeBuildTask waitUntilExit];
+	
+	terminationStatus = [xcodeBuildTask terminationStatus];
+	if (terminationStatus)
+	{
+		DDLogError(@"building Xcode project %@ failed with status %ld", inRepoPath, (long) terminationStatus);
+	}
+	
+	// TODO: optionally move built product (cgi) to cgi directory 
+	
+	return terminationStatus;
+}
+
 
 @end
