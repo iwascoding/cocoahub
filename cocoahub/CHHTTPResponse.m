@@ -29,19 +29,22 @@
 		[cgiTask setEnvironment:[self environmentFromRequest:inRequest]];
 		
 		[cgiTask setStandardInput:inputHandle];
-		[inputHandle writeData:[inRequest body]];
+		if ([[inRequest body] length])
+			[inputHandle writeData:[inRequest body]];
+		else
+			[inputHandle writeData:[@"blah" dataUsingEncoding:NSUTF8StringEncoding]];
+			//[inputHandle writeData:[NSData data]];
 		
 		[cgiTask setStandardOutput:pipe];
 		
 		[cgiTask launch];
-		//[inputHandle closeFile];
 		
 		self.data = [[pipe fileHandleForReading] readDataToEndOfFile];
 
 		[cgiTask waitUntilExit];
 		exitCode =  [cgiTask terminationStatus];
 		
-		//TODO extract status code and headers from CGI output
+		//TODO: extract status code and headers from CGI output
 		self.status = 200;
 		self.httpHeaders = @{@"Content-Type" : @"text/html"};
 	}
@@ -52,10 +55,11 @@
 {
 	NSMutableDictionary *environment = [NSMutableDictionary dictionary];
 	
-	// collect CGI keys as documented here: http://www.cgi101.com/book/ch3/text.html
+	// TODO: collect CGI keys as documented here: http://www.cgi101.com/book/ch3/text.html
 	environment[@"REQUEST_METHOD"] = [inRequest method];
 	environment[@"REQUEST_URI"] = [[inRequest url] absoluteString] ;
-
+	// TODO: access remote address from here
+	//environment[@"REMOTE_ADDR"] = [asyncSocket connectedHost]
 
 	return environment;
 }
