@@ -28,17 +28,19 @@
 		
 		[cgiTask setEnvironment:[self environmentFromRequest:inRequest]];
 		
-		[cgiTask setStandardInput:inputHandle];
+		[cgiTask setStandardInput:inputPipe];
+		[cgiTask setStandardOutput:pipe];
+
+		[cgiTask launch];
+		
+		
 		if ([[inRequest body] length])
 			[inputHandle writeData:[inRequest body]];
 		else
 			[inputHandle writeData:[@"blah" dataUsingEncoding:NSUTF8StringEncoding]];
 			//[inputHandle writeData:[NSData data]];
-		
-		[cgiTask setStandardOutput:pipe];
-		
-		[cgiTask launch];
-		
+		[inputHandle closeFile];
+	
 		self.data = [[pipe fileHandleForReading] readDataToEndOfFile];
 
 		[cgiTask waitUntilExit];
