@@ -7,6 +7,7 @@
 //
 
 #import "CHHTTPRequestRelay.h"
+#import "CHHTTPRequestRelayConnection.h"
 
 #import "HTTPServer.h"
 #import "DDLog.h"
@@ -16,7 +17,6 @@ extern int ddLogLevel;
 @interface CHHTTPRequestRelay ()
 
 @property (strong) HTTPServer			*httpServer;
-@property (strong) NSString				*CGIDir;
 @property (assign) dispatch_queue_t		buildQueue;
 
 @end
@@ -32,15 +32,14 @@ extern int ddLogLevel;
 		
 		self.httpServer = [[HTTPServer alloc] init];
 		[self.httpServer setPort:inPort];
-		//[self.httpServer setConnectionClass:[CHGithubHookConnection class]];
+		[self.httpServer setConnectionClass:[CHHTTPRequestRelayConnection class]];
+		[self.httpServer setDocumentRoot:[[inCGIDir stringByExpandingTildeInPath] stringByStandardizingPath]];
 		if (NO == [self.httpServer start:&error])
 		{
 			DDLogError (@"Failed to start HTTP server on port %ld, %@", inPort, [error localizedDescription]);
 			return nil;
 		}
 		DDLogInfo (@"HTTP request relay started on port %ld", inPort);
-		
-		self.CGIDir = [[inCGIDir stringByExpandingTildeInPath] stringByStandardizingPath];
 	}
 	return self;
 }

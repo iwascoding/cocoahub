@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		4D9B6E0F170B10CF00AAC8C7 /* CHHTTPRequestRelay.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9B6E0E170B10CF00AAC8C7 /* CHHTTPRequestRelay.m */; };
 		4D9B6E2C170B589900AAC8C7 /* GHRepositoryURLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9B6E2B170B589900AAC8C7 /* GHRepositoryURLParser.m */; };
+		4D9B6E31170B66AB00AAC8C7 /* CHHTTPRequestRelayConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9B6E30170B66AB00AAC8C7 /* CHHTTPRequestRelayConnection.m */; };
+		4D9B6E34170B6EBF00AAC8C7 /* CHHTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9B6E33170B6EBF00AAC8C7 /* CHHTTPResponse.m */; };
 		4DE75BEE1704ADEC008B08B7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE75BED1704ADEC008B08B7 /* Foundation.framework */; };
 		4DE75BF11704ADED008B08B7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE75BF01704ADED008B08B7 /* main.m */; };
 		4DE75BF51704ADED008B08B7 /* cocoahub.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4DE75BF41704ADED008B08B7 /* cocoahub.1 */; };
@@ -38,6 +40,10 @@
 		4D9B6E0E170B10CF00AAC8C7 /* CHHTTPRequestRelay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHHTTPRequestRelay.m; sourceTree = "<group>"; };
 		4D9B6E2A170B589900AAC8C7 /* GHRepositoryURLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHRepositoryURLParser.h; sourceTree = "<group>"; };
 		4D9B6E2B170B589900AAC8C7 /* GHRepositoryURLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHRepositoryURLParser.m; sourceTree = "<group>"; };
+		4D9B6E2F170B66AB00AAC8C7 /* CHHTTPRequestRelayConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHHTTPRequestRelayConnection.h; sourceTree = "<group>"; };
+		4D9B6E30170B66AB00AAC8C7 /* CHHTTPRequestRelayConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHHTTPRequestRelayConnection.m; sourceTree = "<group>"; };
+		4D9B6E32170B6EBF00AAC8C7 /* CHHTTPResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHHTTPResponse.h; sourceTree = "<group>"; };
+		4D9B6E33170B6EBF00AAC8C7 /* CHHTTPResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHHTTPResponse.m; sourceTree = "<group>"; };
 		4DE75BEA1704ADEC008B08B7 /* cocoahub */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cocoahub; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DE75BED1704ADEC008B08B7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4DE75BF01704ADED008B08B7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -67,6 +73,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4D9B6E2D170B665200AAC8C7 /* GitHub Integration */ = {
+			isa = PBXGroup;
+			children = (
+				4DE75C0A17071AD8008B08B7 /* CHGithubChangeListener.h */,
+				4DE75C0B17071AD8008B08B7 /* CHGithubChangeListener.m */,
+				4DE75C011704B245008B08B7 /* CHGithubHookConnection.h */,
+				4DE75C021704B245008B08B7 /* CHGithubHookConnection.m */,
+				4D9B6E2A170B589900AAC8C7 /* GHRepositoryURLParser.h */,
+				4D9B6E2B170B589900AAC8C7 /* GHRepositoryURLParser.m */,
+			);
+			name = "GitHub Integration";
+			sourceTree = "<group>";
+		};
+		4D9B6E2E170B666F00AAC8C7 /* Request Relay */ = {
+			isa = PBXGroup;
+			children = (
+				4D9B6E0D170B10CF00AAC8C7 /* CHHTTPRequestRelay.h */,
+				4D9B6E0E170B10CF00AAC8C7 /* CHHTTPRequestRelay.m */,
+				4D9B6E2F170B66AB00AAC8C7 /* CHHTTPRequestRelayConnection.h */,
+				4D9B6E30170B66AB00AAC8C7 /* CHHTTPRequestRelayConnection.m */,
+				4D9B6E32170B6EBF00AAC8C7 /* CHHTTPResponse.h */,
+				4D9B6E33170B6EBF00AAC8C7 /* CHHTTPResponse.m */,
+			);
+			name = "Request Relay";
+			sourceTree = "<group>";
+		};
 		4DE75BE11704ADEC008B08B7 = {
 			isa = PBXGroup;
 			children = (
@@ -98,19 +130,13 @@
 		4DE75BEF1704ADED008B08B7 /* cocoahub */ = {
 			isa = PBXGroup;
 			children = (
+				4D9B6E2E170B666F00AAC8C7 /* Request Relay */,
+				4D9B6E2D170B665200AAC8C7 /* GitHub Integration */,
 				4DE75BF01704ADED008B08B7 /* main.m */,
-				4DE75C0A17071AD8008B08B7 /* CHGithubChangeListener.h */,
-				4DE75C0B17071AD8008B08B7 /* CHGithubChangeListener.m */,
 				4DE75BF41704ADED008B08B7 /* cocoahub.1 */,
 				4DE75BF21704ADED008B08B7 /* Supporting Files */,
-				4DE75C011704B245008B08B7 /* CHGithubHookConnection.h */,
-				4DE75C021704B245008B08B7 /* CHGithubHookConnection.m */,
 				4DE75C041706E908008B08B7 /* CHConfigFileParser.h */,
 				4DE75C051706E908008B08B7 /* CHConfigFileParser.m */,
-				4D9B6E0D170B10CF00AAC8C7 /* CHHTTPRequestRelay.h */,
-				4D9B6E0E170B10CF00AAC8C7 /* CHHTTPRequestRelay.m */,
-				4D9B6E2A170B589900AAC8C7 /* GHRepositoryURLParser.h */,
-				4D9B6E2B170B589900AAC8C7 /* GHRepositoryURLParser.m */,
 			);
 			path = cocoahub;
 			sourceTree = "<group>";
@@ -198,6 +224,8 @@
 				4DE75C0C17071AD8008B08B7 /* CHGithubChangeListener.m in Sources */,
 				4D9B6E0F170B10CF00AAC8C7 /* CHHTTPRequestRelay.m in Sources */,
 				4D9B6E2C170B589900AAC8C7 /* GHRepositoryURLParser.m in Sources */,
+				4D9B6E31170B66AB00AAC8C7 /* CHHTTPRequestRelayConnection.m in Sources */,
+				4D9B6E34170B6EBF00AAC8C7 /* CHHTTPResponse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
