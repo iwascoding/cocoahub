@@ -2,9 +2,8 @@
 
 Cocoahub is a simple web server written in Objective-C that serves two purposes:
 
-* Relay HTTP requests received on your Mac server to HTTP requests handlers (or more commonly called CGIs) written in Objective-C 
+* Relay HTTP requests received on your Mac server to standalone HTTP requests handlers (or more commonly called CGIs) written in Objective-C 
 * Automatically build and install HTTP requests handlers on your Mac server when a change notification from GitHub is received.
-
 
 # Motivation
 
@@ -23,8 +22,6 @@ Cocoahub will automatically build and deploy your projects hosted on GitHub, onc
 
 
 ## CocoaPods support
-
-
 
 If you are using CocoaPods in your HTTP request handlers, cocoahub will update the configured CocoaPods when building your CGI. A working CocoaPods installation is required on your server.
 
@@ -45,8 +42,7 @@ If you are using CocoaPods in your HTTP request handlers, cocoahub will update t
 
 # Limitations
 
-* Cocoahub hasn't seen any production use so far. Consider it alpha quality, and don't use it for heavy production use, yet.
-
-* Cocummincation 
+* Cocoahub hasn't seen any production use so far. Consider it alpha quality, and use it carefully.
+* Communication between cocoahub and CGIs happens through Common gateway interface (and right now it's now even fully supported). If you are a looking for maximum performance, please consider adding FastCGI or XPC channels.  
 
 # License
