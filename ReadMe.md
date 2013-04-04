@@ -3,7 +3,7 @@
 Cocoahub is a simple web server written in Objective-C that serves two purposes:
 
 * Relay HTTP requests received on your Mac server to standalone HTTP requests handlers (or more commonly called CGIs) written in Objective-C 
-* Automatically build and install HTTP requests handlers on your Mac server when a change notification from GitHub is received.
+* Automatically build and install HTTP requests handlers on your Mac server when a change notification/service hook from GitHub is received.
 
 # Motivation
 
@@ -15,8 +15,9 @@ My goal with cocoahub is to come up with something simple to install and maintai
 
 ##Automatic deployment with GitHub
 
-Cocoahub will automatically build and deploy your projects hosted on GitHub, once a change notification from GitHub is received. 
+Cocoahub will automatically build and deploy your projects hosted on GitHub, once a change notification from GitHub is received. Here is what's required for this feature to work:
 
+* your request handler needs to be hosted on GitHub
 * your project's sources need to be checked out on your server in cocoahub's source directory (see configuration)
 * configure your project's setting on repo to send notification on your server's public IP via its GitHub listening port (see configuration) 
 
@@ -34,11 +35,12 @@ If you are using CocoaPods in your HTTP request handlers, cocoahub will update t
 
 # Installing
 
+* TODO: does a brew project make sense for this
 
 # Configuring
 
 
-# Adding CGIs to your cocoahub
+# Adding CGIs to your cocoahub setup
 
 # Limitations
 
