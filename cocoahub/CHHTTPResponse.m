@@ -49,7 +49,6 @@
 		}
 		else
 		{
-			//TODO: extract status code and headers from CGI output
 			self.status = 500; // internal server error
 		}
 	}
