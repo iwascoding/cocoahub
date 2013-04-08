@@ -1,11 +1,14 @@
 #About cococahub
 
-cocoahub is a simple web server written in Objective-C that serves two purposes:
+cocoahub is a simple web server written in Objective-C.
+
+cocoahub is built on top of [CocoaHTTPServer](https://github.com/robbiehanson/CocoaHTTPServer), GitHub and [CocoaPods](http://cocoapods.org). It also handles your custom CGI's written with CocoaPods nicely.
+
+Right now cocoahub serves two purposes:
 
 * Relay HTTP requests received on your Mac server to standalone HTTP requests handlers ( more commonly called CGIs) written in Objective-C .
-* Automatically build and install HTTP custom CGI's on your Mac server when a change notification/service hook from GitHub is received.
+* Automatically build and install  your custom CGI's on your Mac server when a change notification/service hook from GitHub is received.
 
-It's built on top of [CocoaHTTPServer](https://github.com/robbiehanson/CocoaHTTPServer) using [CocoaPods](http://cocoapods.org). It also handles your custom CGI's written with CocoaPods nicely.
 
 # Motivation
 
@@ -61,9 +64,9 @@ githubPort: 3001
 
 If no 'cocahub.conf' is found, the default values shown above will be used.
 
-# Adding CGIs to your cocoahub setup
+# Adding your custom CGIs to cocoahub 
 
-So the documentation at [CHCGI] https://github.com/iwascoding/CHCGI for more details. There is also a sample CGI implementation available [here](https://github.com/iwascoding/cocoahubSampleCGI).
+So the documentation at [CHCGI](https://github.com/iwascoding/CHCGI) for more details. There is also a sample CGI implementation available [here](https://github.com/iwascoding/cocoahubSampleCGI).
 
 
 # How dispatching HTTP Request works
