@@ -15,7 +15,7 @@
 @interface CHHTTPResponse : NSObject <HTTPResponse>
 
 @property (assign) NSInteger	status;
-@property (strong) NSData		*data;
+@property (strong) NSData		*bodyData;
 @property (assign) UInt64		offset;
 @property (strong) NSDictionary	*httpHeaders;
 

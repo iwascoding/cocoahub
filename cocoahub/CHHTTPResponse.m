@@ -22,6 +22,7 @@
 		NSPipe			*inputPipe = [NSPipe pipe];
 		NSFileHandle	*inputHandle = [inputPipe fileHandleForWriting];
 		NSInteger		exitCode;
+		NSData			*taskOutput;
 		
 		[cgiTask setLaunchPath:inCGIPath];
 		[cgiTask setCurrentDirectoryPath:[inCGIPath stringByDeletingLastPathComponent]];
@@ -33,22 +34,24 @@
 
 		[cgiTask launch];
 		
-		
-		if ([[inRequest body] length])
-			[inputHandle writeData:[inRequest body]];
-		else
-			[inputHandle writeData:[@"blah" dataUsingEncoding:NSUTF8StringEncoding]];
-			//[inputHandle writeData:[NSData data]];
+		[inputHandle writeData:[inRequest body]];
 		[inputHandle closeFile];
 	
-		self.data = [[pipe fileHandleForReading] readDataToEndOfFile];
+		taskOutput = [[pipe fileHandleForReading] readDataToEndOfFile];
 
 		[cgiTask waitUntilExit];
 		exitCode =  [cgiTask terminationStatus];
 		
-		//TODO: extract status code and headers from CGI output
-		self.status = 200;
-		self.httpHeaders = @{@"Content-Type" : @"text/html"};
+		if (taskOutput && exitCode == 0)
+		{
+			self.status = 200; //fall-back status if not received from CGI
+			[self extractHeadersAndResponseBodyFromCGIOutput:taskOutput];
+		}
+		else
+		{
+			//TODO: extract status code and headers from CGI output
+			self.status = 500; // internal server error
+		}
 	}
 	return self;
 }
@@ -68,7 +71,7 @@
 
 - (UInt64)contentLength
 {
-	return [self.data length];
+	return [self.bodyData length];
 }
 
 - (BOOL) isDone
@@ -78,11 +81,57 @@
 
 - (NSData *)readDataOfLength:(NSUInteger)length
 {
-	if (length > self.data.length)
+	//TODO: should we compute remaining bytes starting from offset
+	if (length > self.bodyData.length)
 	{
-		length = self.data.length;
+		length = self.bodyData.length;
 	}
-	return [self.data subdataWithRange:NSMakeRange(self.offset, length)];
+	return [self.bodyData subdataWithRange:NSMakeRange(self.offset, length)];
+}
+
+- (void) extractHeadersAndResponseBodyFromCGIOutput:(NSData*) inData
+{
+	// we got to split the CGI's output into headers and body data, so we can get the pieces back
+	// into the CocoaHTTPServer world
+	NSData	*headerDelimiter = [@"\n\n" dataUsingEncoding:NSUTF8StringEncoding];
+	NSData	*headerData = inData;
+	NSRange	headerDelimiterRange = [inData rangeOfData:headerDelimiter
+											   options:0
+												 range:NSMakeRange(0, [inData length])];
+	
+
+	self.bodyData = nil;
+	if (headerDelimiterRange.location != NSNotFound)
+	{
+		headerData = [inData subdataWithRange:NSMakeRange (0, headerDelimiterRange.location)];
+		self.bodyData = [inData subdataWithRange:NSMakeRange(headerDelimiterRange.location + headerDelimiterRange.length,
+														[inData length] - (headerDelimiterRange.location + headerDelimiterRange.length))];
+	}
+	[self extractHeadersFromHeaderData:headerData];
+}
+
+- (void) extractHeadersFromHeaderData:(NSData*) inData
+{
+	NSString			*headerString = [[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding];
+	NSArray				*headerFields = [headerString componentsSeparatedByString:@"\n"];
+	NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
+	
+	for (NSString *headerLine in headerFields)
+	{
+		NSArray *headerLineComponents = [headerLine componentsSeparatedByString:@": "];
+		
+		if (headerLineComponents.count != 2)
+			continue;
+		
+		if ([headerLineComponents[0] isEqualToString:@"Status"])
+		{
+			self.status = [headerLineComponents[1] integerValue];
+			continue;
+		}
+		
+		headerDict[headerLineComponents[0]] = headerLineComponents[1];
+	}
+	self.httpHeaders = [NSMutableDictionary dictionaryWithDictionary:headerDict];
 }
 
 
