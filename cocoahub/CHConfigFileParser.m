@@ -10,16 +10,25 @@
 
 @implementation CHConfigFileParser
 
-+ (NSDictionary*) configurationDictionaryAtPath:(NSString*) inFilePath error:(NSError**) outError
++ (NSDictionary*) configurationDictionaryAtPath:(NSString*) inFilePath error:(NSError**) outError defaultConfig:(NSDictionary*) inDictionary
 {
-	NSMutableDictionary	*configKeys = [NSMutableDictionary dictionary];
+	NSMutableDictionary	*configKeys;
+	
+	if (inDictionary)
+	{
+		configKeys = [NSMutableDictionary dictionaryWithDictionary:inDictionary];
+	}
+	else
+	{
+		configKeys = [NSMutableDictionary dictionary];
+	}
 	
 	NSString	*fileContents = [[NSString alloc] initWithContentsOfFile:inFilePath
 															 encoding:NSUTF8StringEncoding
 																error:outError];
 	if (nil == fileContents)
 	{
-		return nil;
+		return configKeys;
 	}
 	for (NSString *line in [fileContents componentsSeparatedByString:@"\n"])
 	{
@@ -28,7 +37,7 @@
 			continue;
 		}
 		
-		NSRange separatorRange = [line rangeOfString:@"="];
+		NSRange separatorRange = [line rangeOfString:@": "];
 		if (separatorRange.location == NSNotFound || separatorRange.location == 0 )
 		{
 			continue;

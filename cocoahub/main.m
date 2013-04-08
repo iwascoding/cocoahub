@@ -10,6 +10,7 @@
 
 #import "CHGithubChangeListener.h"
 #import "CHHTTPRequestRelay.h"
+#import "CHConfigFileParser.h"
 
 #import "DDLog.h"
 #import "DDFileLogger.h"
@@ -30,24 +31,36 @@ void configureLogging ()
 	[DDLog addLogger:[DDTTYLogger sharedInstance]];
 }
 
+NSDictionary* defaultConfig ()
+{
+	return @{@"repoDir" : @"~/source",
+		  @"cgiDir": @"~/cgi-bin",
+		  @"httpPort" : @"3002",
+		  @"githubPort": @"3001"};
+}
+
 int main(int argc, const char * argv[])
 {
 	@autoreleasepool
 	{
+		
 		configureLogging();
+		
+		NSError			*error;
+		NSDictionary	*config = [CHConfigFileParser configurationDictionaryAtPath:@"cocoahub.conf" error:&error defaultConfig:defaultConfig()];
 		
 		// TODO: configureable path for repo directory
 		// TODO: check that these directories exist and are writeable
-		CHGithubChangeListener *ghChangeListener = [[CHGithubChangeListener alloc] initWithPort:3001
-													repositoryDirectory:@"~/source"
-													CGIDirectory:@"~/cgi-bin"];
+		CHGithubChangeListener *ghChangeListener = [[CHGithubChangeListener alloc] initWithPort:[config[@"githubPort"] integerValue]
+													repositoryDirectory:config[@"repoDir"]
+													CGIDirectory:config[@"cgiDir"]];
 		if (nil == ghChangeListener)
 		{
 			exit (-1);
 		}
 		
-		CHHTTPRequestRelay *requestRelay = [[CHHTTPRequestRelay alloc] initWithPort:3002
-																	   GGIDirectory:@"~/cgi-bin"];
+		CHHTTPRequestRelay *requestRelay = [[CHHTTPRequestRelay alloc] initWithPort:[config[@"httpPort"] integerValue]
+																	   GGIDirectory:config[@"cgiDir"]];
 		if (nil == requestRelay)
 		{
 			exit (-1);
@@ -57,4 +70,6 @@ int main(int argc, const char * argv[])
 	}
     return 0;
 }
+
+
 

@@ -10,4 +10,6 @@
 
 @interface CHConfigFileParser : NSObject
 
++ (NSDictionary*) configurationDictionaryAtPath:(NSString*) inFilePath error:(NSError**) outError defaultConfig:(NSDictionary*) inDictionary;
+
 @end
