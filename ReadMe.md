@@ -69,7 +69,7 @@ If no 'cocahub.conf' is found, the default values shown above will be used.
 So the documentation at [CHCGI](https://github.com/iwascoding/CHCGI) for more details. There is also a sample CGI implementation available [here](https://github.com/iwascoding/cocoahubSampleCGI).
 
 
-# How dispatching HTTP Request works
+# How dispatching HTTP requests works
 
 Right now the dispatch logic is quite simple: The name of the first path component of the requested URL has to match the name of an installed CGI.
 
